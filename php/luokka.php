@@ -63,10 +63,14 @@
 			//echo $url;
 			if ( strlen( strstr( $url, "luntti.net" ) ) > 0 )
 			{
-				$this->host_name = 'mysql.luntti.net';
-				$this->user_name = 'math123';
-				$this->password  = '';
-				$this->db_name   = 'math';
+
+                $config = parse_ini_file('../../backupPWD/config.ini'); 
+        $connection = mysqli_connect($config['servername'],$config['username'],$config['password'],$config['dbname']);
+
+				$this->host_name = $config['dbhost'];
+				$this->user_name = $config['dbuser'];
+				$this->password  = $config['dbpass'];
+				$this->db_name   = $config['dbname'];
 			}
 			elseif ( strlen( strstr( $url, "localhost" ) ) > 0 )
 			{
