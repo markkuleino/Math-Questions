@@ -64,8 +64,7 @@
 			if ( strlen( strstr( $url, "luntti.net" ) ) > 0 )
 			{
 
-                $config = parse_ini_file('../../backupPWD/config.ini'); 
-        $connection = mysqli_connect($config['servername'],$config['username'],$config['password'],$config['dbname']);
+                $config = parse_ini_file('../backupPWD/config.ini'); 
 
 				$this->host_name = $config['dbhost'];
 				$this->user_name = $config['dbuser'];
