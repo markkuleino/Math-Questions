@@ -49,7 +49,7 @@
 
 
 
-    
+
 
 	class Testi extends MySQL_naama {
 		var $host_name = '';
@@ -67,7 +67,7 @@
 			if ( strlen( strstr( $url, "luntti.net" ) ) > 0 )
 			{
 
-                $config = parse_ini_file('../backupPWD/config.ini'); 
+                $config = parse_ini_file ( $_SERVER['DOCUMENT_ROOT'] . '/../backupPWD/config.ini'); 
 
 				$this->host_name = $config['dbhost'];
 				$this->user_name = $config['dbuser'];
