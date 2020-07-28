@@ -469,8 +469,8 @@ return $this -> conn_id -> lastInsertId();
                 $this->connect();
             try{
                 $sql = $this->conn_id->prepare( "
-                select distinct topic from questiontopics 
-                inner join topicsQ on questiontopics.topicID=topicsQ.ID
+                select distinct topic from questionTopics 
+                inner join topicsQ on questionTopics.topicID=topicsQ.ID
                 ORDER by topic;
                 " );//WHERE
                 $sql->setFetchMode(PDO::FETCH_INTO, new koe);
