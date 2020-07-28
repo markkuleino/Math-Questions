@@ -328,6 +328,7 @@ $('#questionForm').on("submit", function(e) {
   }).done(function(data) {
     console.log(data); 
     $("#result").html(e);
+    alert( "Talletettu" + e ):
 
   }).fail(function(e) {
     alert('Fail');
