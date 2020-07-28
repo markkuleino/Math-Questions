@@ -1,0 +1,175 @@
+
+mysql -u eliot100 -p -h mysql.luntti.net eliot
+https://east1-phpmyadmin.dreamhost.com/?hostname=mysql.luntti.net
+
+
+
+mysqldump -u [username] -p [password] [databasename] > [backupfile.sql]
+
+CREATE database mathquestions;
+USE mathquestions;
+
+
+CREATE TABLE refs(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   ref VARCHAR(1024),
+   www VARCHAR(4096),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+INSERT INTO refs values(NULL, 'Ylioppilaskoe', 'www.ytl.fi');
+INSERT INTO refs values(NULL, 'Catriona Shearer', 'https://twitter.com/Cshearer41');
+INSERT INTO refs values(NULL, 'Putnam', 'https://kskedlaya.org/putnam-archive/');
+INSERT INTO refs values(NULL, 'Baltian tie', 'https://matematiikkakilpailut.fi/Baltian_tie/');
+INSERT INTO refs values(NULL, 'Pythagoraan polku', 'https://matematiikkakilpailut.fi/pythagoras/');
+INSERT INTO refs values(NULL, 'https://maol.fi/neljan-tieteen-kisat/vanhat-kilpailutehtavat/');
+INSERT INTO refs values(NULL,'Yläkoulun matematiikkakilpailu', 'https://maol.fi/neljan-tieteen-kisat/vanhat-kilpailutehtavat/');
+INSERT INTO refs values(NULL, 'Matematiikkaolympialaiset', 'https://matematiikkakilpailut.fi/IMO/');
+
+
+
+
+
+
+
+CREATE TABLE topicsA(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   topic VARCHAR(1024),
+   UNIQUE (topic),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+INSERT INTO topicsA values(NULL, 'Tulon nollasääntö');
+INSERT INTO topicsA values(NULL, 'Toisen asteen yhtälön ratkaisukaava');
+INSERT INTO topicsA values(NULL, 'Sini-funktio');
+INSERT INTO topicsA values(NULL, 'Cosini-funktio');
+INSERT INTO topicsA values(NULL, 'Derivaatta');
+INSERT INTO topicsA values(NULL, 'Erotusosamäärä');
+
+CREATE TABLE topicsQ(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   topic VARCHAR(1024),
+   UNIQUE (topic),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+INSERT INTO topicsQ values(NULL, 'Tulon nollasääntö');
+INSERT INTO topicsQ values(NULL, 'Toisen asteen yhtälön ratkaisukaava');
+INSERT INTO topicsQ values(NULL, 'Sini-funktio');
+INSERT INTO topicsQ values(NULL, 'Cosini-funktio');
+INSERT INTO topicsQ values(NULL, 'Derivaatta');
+INSERT INTO topicsQ values(NULL, 'Erotusosamäärä');
+
+
+
+CREATE TABLE levels(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   level VARCHAR(1024),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+INSERT INTO levels values(10, 'Alakoulu' );
+INSERT INTO levels values(50, 'Yläkoulu' );
+INSERT INTO levels values(100, 'Lukio' );
+INSERT INTO levels values(150, 'Yliopisto' );
+
+
+
+CREATE TABLE users(
+	ID  SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	name VARCHAR(128), 
+	pwd CHAR(255),
+	PRIMARY KEY(ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO users VALUES (NULL, 'user', SHA1("yourGoodPwd") );
+
+
+CREATE TABLE images(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   namernd VARCHAR(100),
+   path VARCHAR(100),
+   creator VARCHAR(300),
+   copyright VARCHAR(300),
+   date  DATETIME, 
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+CREATE TABLE questions(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   question MEDIUMTEXT,
+   qdate DATETIME,
+   date DATETIME,
+   questionNRO VARCHAR(10),
+   link VARCHAR(2048),
+   refID SMALLINT UNSIGNED,
+   FOREIGN KEY (refID) REFERENCES refs(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+CREATE TABLE questionImages(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   imageID SMALLINT UNSIGNED,
+   questionID SMALLINT UNSIGNED,
+   FOREIGN KEY (imageID) REFERENCES images(ID),
+   FOREIGN KEY (questionID) REFERENCES questions(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+CREATE TABLE answers(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   answer MEDIUMTEXT,
+   date DATETIME,
+   topicsID SMALLINT UNSIGNED, 
+   refID SMALLINT UNSIGNED,
+   FOREIGN KEY (refID) REFERENCES refs(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+CREATE TABLE answerImages(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   imageID SMALLINT UNSIGNED,
+   answerID SMALLINT UNSIGNED,
+   FOREIGN KEY (imageID) REFERENCES images(ID),
+   FOREIGN KEY (answerID) REFERENCES answers(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+CREATE TABLE questionAnswer(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   questionID SMALLINT UNSIGNED,
+   answerID SMALLINT UNSIGNED,
+   FOREIGN KEY (questionID) REFERENCES questions(ID),
+   FOREIGN KEY (answerID) REFERENCES answers(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+
+CREATE TABLE questiontopics(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   questionID SMALLINT UNSIGNED,
+   topicID SMALLINT UNSIGNED,
+   FOREIGN KEY (questionID) REFERENCES questions(ID),
+   FOREIGN KEY (topicID) REFERENCES topicsQ(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABLE answertopics(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   questionID SMALLINT UNSIGNED,
+   topicID SMALLINT UNSIGNED,
+   FOREIGN KEY (questionID) REFERENCES answers(ID),
+   FOREIGN KEY (topicID) REFERENCES topicsA(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+select distinct topicID from questiontopics 
+inner join topicsQ on questiontopics.topicID=topicsQ.ID;
+
+
+select count(*) as lkm from questions;
+
+
+
