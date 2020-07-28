@@ -48,6 +48,9 @@
     }
 
 
+
+    
+
 	class Testi extends MySQL_naama {
 		var $host_name = '';
 		var $user_name = '';
