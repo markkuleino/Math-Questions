@@ -431,7 +431,7 @@ function   getSolutionTopics( $sid ){
         $sql = $this->conn_id->prepare( "
         select  topicsA.topic from topicsA
         INNER JOIN 
-          solutiontopics  on solutiontopics.topicID = topicsA.ID
+          solutionTopics  on solutionTopics.topicID = topicsA.ID
         INNER JOIN 
           solutions on solutions.ID = solutionTopics.solutionID        
         WHERE solutions.ID=:sid 
@@ -789,9 +789,9 @@ function getTaggedSolutionQuestions( $st ){
         INNER JOIN
         solutions on solutions.qID = questions.ID
         INNER JOIN
-        solutiontopics on solutiontopics.solutionID = solutions.ID 
+        solutionTopics on solutionTopics.solutionID = solutions.ID 
         INNER JOIN
-        topicsA on topicsA.ID = solutiontopics.topicID
+        topicsA on topicsA.ID = solutionTopics.topicID
         WHERE
         topicsA.topic IN ($in)
 
