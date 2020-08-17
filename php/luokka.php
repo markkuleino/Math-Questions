@@ -590,9 +590,9 @@ function   getQuestionTopicsOne( $id ){
         $sql = $this->conn_id->prepare( "
         select  topicsQ.topic as topic from topicsQ
 INNER JOIN
-questiontopics on questiontopics.topicID = topicsQ.ID
+questionTopics on questionTopics.topicID = topicsQ.ID
 WHERE 
-questiontopics.questionID = :id
+questionTopics.questionID = :id
         " );//WHERE
         $sql->setFetchMode(PDO::FETCH_INTO, new koe);
         if( !$sql->execute(array(
@@ -754,9 +754,9 @@ function getTaggedQuestions( $st ){
         $sql = $this->conn_id->prepare( "
         select * from questions 
         INNER JOIN
-        questiontopics on questions.ID = questiontopics.questionID
+        questionTopics on questions.ID = questionTopics.questionID
         INNER JOIN
-        topicsQ on questiontopics.topicID = topicsQ.ID
+        topicsQ on questionTopics.topicID = topicsQ.ID
         WHERE 
         topicsQ.topic IN ($in)
         " );
