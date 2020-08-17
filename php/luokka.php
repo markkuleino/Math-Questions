@@ -292,13 +292,15 @@
         }
     return $result;
 }
-function   getTopicsQ( ){
+function   getTopics( ){
     if ( empty( $this->conn_id ) ) // Not connected
         $this->connect();
     try{
         $sql = $this->conn_id->prepare( "
-            SELECT topic FROM topicsQ
-             ORDER BY topic 
+            SELECT topic FROM `topicsa` 
+            UNION
+            SELECT topic from topicsq
+            ORDER BY topic 
         " );//WHERE
         $sql->setFetchMode(PDO::FETCH_INTO, new koe);
         if( !$sql->execute(array(
@@ -394,6 +396,66 @@ if ($sql -> rowCount() < 2){
     }
 return $result;
 }
+function   getTopicA( $ref ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+    try{
+        $sql = $this->conn_id->prepare( "
+            SELECT ID FROM topicsA
+             WHERE topic=:ref 
+        " );//WHERE
+        $sql->setFetchMode(PDO::FETCH_INTO, new koe);
+        if( !$sql->execute(array(
+            ":ref" => $ref
+        )) ){
+        print_r($sql->errorInfo());
+}
+if ($sql -> rowCount() < 2){
+                $result = $sql -> fetchAll();
+        } else{
+            while ($object = $sql->fetch()) {
+                $result[] = clone $object;
+           }  
+        }
+    } catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $result;
+}
+
+
+function   getSolutionTopics( $sid ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+    try{
+        $sql = $this->conn_id->prepare( "
+        select  topicsA.topic from topicsA
+        INNER JOIN 
+          solutiontopics  on solutiontopics.topicID = topicsA.ID
+        INNER JOIN 
+          solutions on solutions.ID = solutionTopics.solutionID        
+        WHERE solutions.ID=:sid 
+        " );//WHERE
+        $sql->setFetchMode(PDO::FETCH_INTO, new koe);
+        if( !$sql->execute(array(
+            ":sid" => $sid
+        )) ){
+        print_r($sql->errorInfo());
+}
+if ($sql -> rowCount() < 2){
+                $result = $sql -> fetchAll();
+        } else{
+            while ($object = $sql->fetch()) {
+                $result[] = clone $object;
+           }  
+        }
+    } catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $result;
+}
+
+
 
 
 
@@ -415,6 +477,24 @@ function addTopicQ( $ref ){
     }
 return $this -> conn_id -> lastInsertId();
 }  
+function addTopicA( $ref ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+        try{
+        $sql = $this->conn_id->prepare( "
+            INSERT INTO topicsA (topic) VALUES(:ref)
+        " );//WHERE
+        $sql->setFetchMode(PDO::FETCH_INTO, new koe);
+        if( !$sql->execute(array(
+            ":ref" => $ref
+        )) ){
+        print_r($sql->errorInfo());
+        }
+    }catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $this -> conn_id -> lastInsertId();
+} 
 
 
 function addQuestion( $q, $qdate, $nro, $link, $refID ){
@@ -442,7 +522,47 @@ return $this -> conn_id -> lastInsertId();
 }  
 
 
+function addSolution( $s, $qID ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+        try{
+        $sql = $this->conn_id->prepare( "
+            INSERT INTO solutions (solution, date, qID ) 
+            VALUES(:s, NOW(), :qID)
+        " );//WHERE
+        $sql->setFetchMode(PDO::FETCH_INTO, new koe);
+        if( !$sql->execute(array(
+            ":s" => $s,
+            ":qID" => $qID,
+        )) ){
+        print_r($sql->errorInfo());
+        }
+    }catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $this -> conn_id -> lastInsertId();
+}  
 
+
+function addTopicSolution( $sID, $tID ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+        try{
+        $sql = $this->conn_id->prepare( "
+            INSERT INTO solutionTopics (solutionID, topicID) VALUES(:sID, :tID)
+        " );//WHERE
+        $sql->setFetchMode(PDO::FETCH_INTO, new koe);
+        if( !$sql->execute(array(
+            ":sID" => $sID,
+            ":tID" => $tID
+        )) ){
+        print_r($sql->errorInfo());
+        }
+    }catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $this -> conn_id -> lastInsertId();
+}  
 
 function addTopicQuestion( $qID, $tID ){
     if ( empty( $this->conn_id ) ) // Not connected
@@ -463,7 +583,35 @@ function addTopicQuestion( $qID, $tID ){
     }
 return $this -> conn_id -> lastInsertId();
 }  
-
+function   getQuestionTopicsOne( $id ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+    try{
+        $sql = $this->conn_id->prepare( "
+        select  topicsq.topic as topic from topicsq
+INNER JOIN
+questiontopics on questiontopics.topicID = topicsq.ID
+WHERE 
+questiontopics.questionID = :id
+        " );//WHERE
+        $sql->setFetchMode(PDO::FETCH_INTO, new koe);
+        if( !$sql->execute(array(
+            ":id" => $id
+        )) ){
+        print_r($sql->errorInfo());
+}
+if ($sql -> rowCount() < 2){
+                $result = $sql -> fetchAll();
+        } else{
+            while ($object = $sql->fetch()) {
+                $result[] = clone $object;
+           }  
+        }
+    } catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $result;
+}
    function   getQuestionTopics( ){
             if ( empty( $this->conn_id ) ) // Not connected
                 $this->connect();
@@ -490,7 +638,33 @@ return $this -> conn_id -> lastInsertId();
             }
 		return $result;
     }
-    
+    function   getAllSolutionTopics( ){
+        if ( empty( $this->conn_id ) ) // Not connected
+            $this->connect();
+        try{
+            $sql = $this->conn_id->prepare( "
+            select distinct topic from solutionTopics 
+            inner join topicsA on solutionTopics.topicID=topicsA.ID
+            ORDER by topic;
+            " );//WHERE
+            $sql->setFetchMode(PDO::FETCH_INTO, new koe);
+            if( !$sql->execute(array(
+            )) ){
+            print_r($sql->errorInfo());
+    }
+    if ($sql -> rowCount() < 2){
+                    $result = $sql -> fetchAll();
+            } else{
+                while ($object = $sql->fetch()) {
+                    $result[] = clone $object;
+               }  
+            }
+        } catch (PDOException $e) {
+            $this->error($e->getMessage());
+        }
+    return $result;
+}
+
     
    function   getNumberOfQuestions( ){
             if ( empty( $this->conn_id ) ) // Not connected
@@ -523,7 +697,7 @@ return $this -> conn_id -> lastInsertId();
             $this->connect();
         try{
             $sql = $this->conn_id->prepare( "
-            select *  from questions;
+            select ID as questionID, qdate as qdate, date as date, questionNRO as questionNRO, link as link, refID as refID, question as question  from questions;
             " );//WHERE
             $sql->setFetchMode(PDO::FETCH_INTO, new kuva);
             if( !$sql->execute(array(
@@ -541,6 +715,135 @@ return $this -> conn_id -> lastInsertId();
             $this->error($e->getMessage());
         }
     return $result;
+}
+
+function   getQuestion( $id ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+    try{
+        $sql = $this->conn_id->prepare( "
+        select *  from questions
+        WHERE ID = :id
+        " );
+        $sql->setFetchMode(PDO::FETCH_INTO, new kuva);
+        if( !$sql->execute(array(
+            ':id' => $id
+        )) ){
+        print_r($sql->errorInfo());
+}
+if ($sql -> rowCount() < 2){
+                $result = $sql -> fetchAll();
+        } else{
+            while ($object = $sql->fetch()) {
+                $result[] = clone $object;
+           }  
+        }
+    } catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $result;
+}	
+
+
+function getTaggedQuestions( $st ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+    try{
+        $in  = str_repeat('?,', count($st) - 1) . '?';
+ 
+        $sql = $this->conn_id->prepare( "
+        select * from questions 
+        INNER JOIN
+        questiontopics on questions.ID = questiontopics.questionID
+        INNER JOIN
+        topicsq on questiontopics.topicID = topicsq.ID
+        WHERE 
+        topicsq.topic IN ($in)
+        " );
+        $sql->setFetchMode(PDO::FETCH_INTO, new kuva);
+        if( !$sql->execute( $st ) ){
+        print_r($sql->errorInfo());
+}
+if ($sql -> rowCount() < 2){
+                $result = $sql -> fetchAll();
+        } else{
+            while ($object = $sql->fetch()) {
+                $result[] = clone $object;
+           }  
+        }
+    } catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $result;
+}	
+
+
+function getTaggedSolutionQuestions( $st ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+    try{
+        $in  = str_repeat('?,', count($st) - 1) . '?';
+ 
+        $sql = $this->conn_id->prepare( "
+        select  questions.ID as questionID, qdate as qdate, questions.date as date, questionNRO as questionNRO, link as link, refID as refID, question as question from questions 
+        INNER JOIN
+        solutions on solutions.qID = questions.ID
+        INNER JOIN
+        solutiontopics on solutiontopics.solutionID = solutions.ID 
+        INNER JOIN
+        topicsa on topicsa.ID = solutiontopics.topicID
+        WHERE
+        topicsa.topic IN ($in)
+
+        " );
+        $sql->setFetchMode(PDO::FETCH_INTO, new kuva);
+        if( !$sql->execute( $st ) ){
+        print_r($sql->errorInfo());
+}
+if ($sql -> rowCount() < 2){
+                $result = $sql -> fetchAll();
+        } else{
+            while ($object = $sql->fetch()) {
+                $result[] = clone $object;
+           }  
+        }
+    } catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $result;
+}	
+
+
+
+
+
+
+
+function   getSolutions( $id ){
+    if ( empty( $this->conn_id ) ) // Not connected
+        $this->connect();
+    try{
+        $sql = $this->conn_id->prepare( "
+        select *  from solutions
+        WHERE qid = :id
+        " );
+        $sql->setFetchMode(PDO::FETCH_INTO, new kuva);
+        if( !$sql->execute(array(
+            ':id' => $id
+        )) ){
+        print_r($sql->errorInfo());
+}
+if ($sql -> rowCount() < 2){
+                $result = $sql -> fetchAll();
+        } else{
+            while ($object = $sql->fetch()) {
+                $result[] = clone $object;
+           }  
+        }
+    } catch (PDOException $e) {
+        $this->error($e->getMessage());
+    }
+return $result;
 }	
 
 

@@ -114,17 +114,27 @@ CREATE TABLE questionImages(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 
+
+
+
+****** Answers -> Solutions
+****** New simpliefied Answers
+
+ALTER TABLE answers DROP FOREIGN KEY refID;
+ALTER TABLE answers DROP COLUMN refID;
+
 CREATE TABLE answers(
    ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
    answer MEDIUMTEXT,
    date DATETIME,
    topicsID SMALLINT UNSIGNED, 
-   refID SMALLINT UNSIGNED,
-   FOREIGN KEY (refID) REFERENCES refs(ID),
+-> REMOVE   refID SMALLINT UNSIGNED,
+-> REMOVE   FOREIGN KEY (refID) REFERENCES refs(ID),
    PRIMARY KEY (ID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 
+DROP TABLE answerImages;
 CREATE TABLE answerImages(
    ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
    imageID SMALLINT UNSIGNED,
@@ -145,16 +155,7 @@ CREATE TABLE questionAnswer(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 
-
-CREATE TABLE questiontopics(
-   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-   questionID SMALLINT UNSIGNED,
-   topicID SMALLINT UNSIGNED,
-   FOREIGN KEY (questionID) REFERENCES questions(ID),
-   FOREIGN KEY (topicID) REFERENCES topicsQ(ID),
-   PRIMARY KEY (ID)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
-
+DROP table answertopics;
 CREATE TABLE answertopics(
    ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
    questionID SMALLINT UNSIGNED,
@@ -165,11 +166,90 @@ CREATE TABLE answertopics(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 
+***** Below are new tables for solutions
+
+
+CREATE TABLE solutions(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   solution MEDIUMTEXT,
+   date DATETIME,
+   qID SMALLINT UNSIGNED, 
+   FOREIGN KEY (qID) REFERENCES questions(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+CREATE TABLE solutionTopics(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   solutionID SMALLINT UNSIGNED,
+   topicID SMALLINT UNSIGNED,
+   FOREIGN KEY (solutionID) REFERENCES solutions(ID),
+   FOREIGN KEY (topicID) REFERENCES topicsA(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+
+
+CREATE TABLE solutionImages(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   imageID SMALLINT UNSIGNED,
+   solutionID SMALLINT UNSIGNED,
+   FOREIGN KEY (imageID) REFERENCES imagesSol(ID),
+   FOREIGN KEY (imageID) REFERENCES solutions(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+
+
+CREATE TABLE questiontopics(
+   ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+   questionID SMALLINT UNSIGNED,
+   topicID SMALLINT UNSIGNED,
+   FOREIGN KEY (questionID) REFERENCES questions(ID),
+   FOREIGN KEY (topicID) REFERENCES topicsQ(ID),
+   PRIMARY KEY (ID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
 select distinct topicID from questiontopics 
 inner join topicsQ on questiontopics.topicID=topicsQ.ID;
-
 
 select count(*) as lkm from questions;
 
 
+
+select * from topicsA
+INNER JOIN 
+  solutiontopics  on solutiontopics.topicID = topicsA.ID
+INNER JOIN 
+  solutions on solutions.ID = solutionTopics.solutionID
+
+
+select * from questions 
+INNER JOIN
+questiontopics on questions.ID = questiontopics.questionID
+INNER JOIN
+topicsq on questiontopics.topicID = topicsq.ID
+WHERE 
+topicsq.topic IN ('Derivaatta', 'sin')
+
+
+select * from questions 
+INNER JOIN
+solutions on solutions.qID = questions.ID
+INNER JOIN
+solutiontopics on solutiontopics.solutionID = solutions.ID 
+INNER JOIN
+topicsa on topicsa.ID = solutiontopics.topicID
+WHERE
+topicsa.topic IN ('neliöjuuri')
+
+
+
+select  topicsq.topic from topicsq
+INNER JOIN
+questiontopics on questiontopics.topicID = topicsq.ID
+WHERE 
+questiontopics.questionID = 6
 

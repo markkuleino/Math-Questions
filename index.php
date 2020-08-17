@@ -1,5 +1,5 @@
 <?php
-//session_start();
+session_start();
 include_once("php/luokka.php");
 include_once("php/config.php"); //Yhdistetään tietokantaan täällä.
 
@@ -29,7 +29,9 @@ include_once("php/config.php"); //Yhdistetään tietokantaan täällä.
   <link rel="stylesheet" href="css/default.css">
 
 
-
+  <script src="js/fastsearch.js"></script>
+  <script src="js/fastselect.js"></script>
+  <link href="css/fastselect.css" rel="stylesheet">
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/favicon.png">
@@ -48,7 +50,7 @@ include_once("php/config.php"); //Yhdistetään tietokantaan täällä.
   }
   </script>
 
-  
+
 <style>
 	.border{
 		border-style: solid;
@@ -73,45 +75,257 @@ include_once("php/config.php"); //Yhdistetään tietokantaan täällä.
 	border-radius: 5px;
 
 }
+
+.solution{
+  border: 2px solid red;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 3px
+}
+.topic{
+  border: 2px solid red;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 3px;
+}
+.qtopic{
+  border: 2px solid green;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 3px;
+}
+.nonvisible{
+  display:none;
+
+}
+hr.solutions {
+  border: 1px dashed red;
+}
+
+.fstElement { font-size: 1.2em; }
+            .fstToggleBtn { min-width: 16.5em; }
+
+            .submitBtn { display: none; }
+
+            .fstMultipleMode { display: block; }
+            .fstMultipleMode .fstControls { width: 100%; }
+
 </style>
 
 </head>
 <body>
-	
+  
+
+
+
+
+
+<script>
+
+$(function()   {
+function toggleSlider(el) {
+    var dv = $(el).next('div');
+    if (dv.is(":visible")) {
+        dv.animate({ opacity: "0" }, 100, function () { dv.slideUp(); } );
+    }
+    else { 
+      dv.slideDown(100, function () {
+            dv.animate( { opacity: "1" }, 100 );
+        });
+    }
+}
+
+$('.toggle_solutions').click(function(e) {
+  e.preventDefault();
+  toggleSlider(this);
+})
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <?php
 //include 'php/getIPs.php';
 ?>
 
 <?php
 $topics = $conn -> getQuestionTopics();
+$topicsSol = $conn -> getAllSolutionTopics();
+
 $lkm = $conn -> getNumberOfQuestions();
 
-$questions = $conn -> getQuestions();
+$searchTopics = [];
+if (isset( $_GET['q'] ) ){
+  foreach( $_GET['q'] as $q ){
+    array_push($searchTopics, $q);
+  }
+}
+$searchTopicsSol = [];
+if (isset( $_GET['s'] ) ){
+  foreach( $_GET['s'] as $q ){
+    array_push($searchTopicsSol, $q);
+  }
+}
+
+
+$questions = [];
+if ( count( $searchTopics ) > 0){
+  $questions = $conn -> getTaggedQuestions( $searchTopics );
+}
+if ( count( $searchTopicsSol ) > 0){
+  $questions = array_merge( $questions, $conn -> getTaggedSolutionQuestions( $searchTopicsSol ) );
+}
+if ( count($questions)==0  ){
+  $questions = $conn -> getQuestions();
+}
+
+
 
 ?>
 
 <div id="container">
 
+<form id="findForm" action="#" method="GET">
 	<div class="row">
-	<div class="six columns">
-<p> 		Tehtävien haku tulee tähän. Nyt tarjolla (ei haettavissa) seuraavat tagit:
+  <h3>Tehtävien haku</h3>
+
+
+
+  <p>Tehtäviä on <?php echo $lkm[0]->lkm; ?> kpl. Valitse haluamaisi aiheen kysymykset.</p>
+
+
+
+  <div class="five columns">
+  <label for="qtopics">Kysymykset:</label>
+  <select  class="multipleSelect" name="q[]" id="qtopics" placeholder="" multiple="multiple">
 <?php
-print_r($topics);
+foreach( $topics as $t){
+  if (in_array( $t->topic, $searchTopics )){
+    echo '<option selected value="' . $t->topic . '">' .$t->topic.'</option>';
+
+  }else{
+    echo '<option value="' . $t->topic . '">' .$t->topic.'</option>';
+  }
+}
 ?>
-ja tehtäviä on <?php echo $lkm[0]->lkm; ?> kpl.</p>
+</select>
 
-	</div>
+
+ 	</div>
+  <div class="six columns">
+  <label for="stopics">Ratkaisut:</label>
+  <select class="multipleSelect" name="s[]" id="stopics" multiple="multiple" placeholder="Valitse">
+  <?php
+foreach( $topicsSol as $t){
+  if (in_array( $t->topic, $searchTopicsSol )){
+    echo '<option selected value="' . $t->topic . '">' .$t->topic.'</option>';
+  }else{
+    echo '<option value="' . $t->topic . '">' .$t->topic.'</option>';
+  }
+}
+?>
+</select>
+ 
+
+
+<script>
+
+    $('.multipleSelect').fastselect();
+
+</script>
+
+
+
+
+
+</div>
 
 </div>
 </div>
+<p>Hakuoperaattorina on (Boolean) <em>tai</em>.</p>
+<input value="Etsi" type="submit">
+</form>
 
 
 <div class="row">
  <?php
 
 foreach ($questions as $q){
-	echo '<div class="question">';
-	echo $q -> question; 
+  echo '<div class="question">';
+  
+  //Print the tag topics;
+  //print_r( $q );
+  $quesTopics = $conn -> getQuestionTopicsOne( $q -> questionID );
+
+  echo '<div class="topics">';
+    foreach ($quesTopics as $t){
+        echo '<span class="qtopic">';
+        echo( $t -> topic );
+        echo '</span>';
+    }
+  echo '</div>';
+
+  //Print the question; 
+  echo $q -> question; 
+  
+  $solutions = $conn -> getSolutions($q->questionID );
+  if (count( $solutions) > 0){
+
+  echo "<hr class='solutions'>"; 
+
+    if (count( $solutions) == 1){
+      echo "Kysymykseen on 1 vastaus." . "\n";
+    }else{
+      echo "Kysymykseen on " . count( $solutions) . " vastausta." . "\n";      
+    }
+
+
+    $solutionNumber = 1;
+    foreach( $solutions as $s){
+      echo '<a href="#" class="toggle_solutions">'. $solutionNumber .'</a> ';
+      $solutionNumber = $solutionNumber +1;
+
+        $solTopics = $conn -> getSolutionTopics( $s -> ID );
+        echo '<div class="solution nonvisible">';
+
+        echo '<div class="topics">';
+        foreach ($solTopics as $t){
+            echo '<span class="topic">';
+            echo( $t -> topic );
+            echo '</span>';
+        }
+        echo '</div>';
+        echo $s -> solution; 
+        echo '</div>' . "\n" ;
+    }
+}
+
+
+
+
+
+  if ( isset($_SESSION['uname'])){
+    echo "<a href='newSolution.php?id=". $q -> ID ."'>Lisää vastaus</a>";
+  }
+
+
+
 	echo '</div>';
 }
 
@@ -139,3 +353,12 @@ foreach ($questions as $q){
 </div>
 </div>
 </div>
+
+
+<script>
+        
+
+
+</script>
+
+
