@@ -297,9 +297,9 @@ function   getTopics( ){
         $this->connect();
     try{
         $sql = $this->conn_id->prepare( "
-            SELECT topic FROM `topicsa` 
+            SELECT topic FROM `topicsA` 
             UNION
-            SELECT topic from topicsq
+            SELECT topic from topicsQ
             ORDER BY topic 
         " );//WHERE
         $sql->setFetchMode(PDO::FETCH_INTO, new koe);
@@ -588,9 +588,9 @@ function   getQuestionTopicsOne( $id ){
         $this->connect();
     try{
         $sql = $this->conn_id->prepare( "
-        select  topicsq.topic as topic from topicsq
+        select  topicsQ.topic as topic from topicsQ
 INNER JOIN
-questiontopics on questiontopics.topicID = topicsq.ID
+questiontopics on questiontopics.topicID = topicsQ.ID
 WHERE 
 questiontopics.questionID = :id
         " );//WHERE
@@ -756,9 +756,9 @@ function getTaggedQuestions( $st ){
         INNER JOIN
         questiontopics on questions.ID = questiontopics.questionID
         INNER JOIN
-        topicsq on questiontopics.topicID = topicsq.ID
+        topicsQ on questiontopics.topicID = topicsQ.ID
         WHERE 
-        topicsq.topic IN ($in)
+        topicsQ.topic IN ($in)
         " );
         $sql->setFetchMode(PDO::FETCH_INTO, new kuva);
         if( !$sql->execute( $st ) ){
@@ -791,9 +791,9 @@ function getTaggedSolutionQuestions( $st ){
         INNER JOIN
         solutiontopics on solutiontopics.solutionID = solutions.ID 
         INNER JOIN
-        topicsa on topicsa.ID = solutiontopics.topicID
+        topicsA on topicsA.ID = solutiontopics.topicID
         WHERE
-        topicsa.topic IN ($in)
+        topicsA.topic IN ($in)
 
         " );
         $sql->setFetchMode(PDO::FETCH_INTO, new kuva);
