@@ -321,7 +321,7 @@ foreach ($questions as $q){
 
 
   if ( isset($_SESSION['uname'])){
-    echo "<a href='newSolution.php?id=". $q -> ID ."'>Lisää vastaus</a>";
+    echo "<a href='newSolution.php?id=". $q -> questionID ."'>Lisää vastaus</a>";
   }
 
 
