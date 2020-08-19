@@ -117,7 +117,7 @@ var fileLink = 'DD';
 
 $levels = $conn -> getLevels(  );
 $refs = $conn -> getRefs(  );
-$topics = $conn -> getTopicsQ(  );
+$topics = $conn -> getTopics(  );
 $topics = "'" . implode ( "', '", array_column($topics, 'topic') ) . "'";
 
 ?>

@@ -203,7 +203,9 @@ if ( count($questions)==0  ){
 
 <form id="findForm" action="#" method="GET">
 	<div class="row">
+  <a href='newQuestion.php'>Lisää uusi kysymys</a>
   <h3>Tehtävien haku</h3>
+
 
 
 
