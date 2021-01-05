@@ -1193,11 +1193,11 @@ public static function interpolateQuery($query, $params) {
             }
             $sel .= " GROUP BY questions.ID ";
             $sel .= " ORDER BY date desc";
-            echo '<pre>';
-            print_r( $wh );
-            echo $sel . "</br>";
-            print_r($whIn);
-            echo '</pre>';
+            //echo '<pre>';
+            //print_r( $wh );
+            //echo $sel . "</br>";
+            //print_r($whIn);
+            //echo '</pre>';
 
             return $this -> conn -> getTaggedQuestionsAdv($sel, $whIn);
         
