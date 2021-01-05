@@ -100,6 +100,24 @@ Original highlight.js style (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
 }
 
 
+a.large{
+  font-size:300%;
+  color: red;
+}
+a:link.large {
+  text-decoration: none;
+}
+a:visited.large {
+  text-decoration: none;
+}
+a:hover.large {
+  text-decoration: none;
+}
+a:active.large {
+ text-decoration: none;
+}
+
+
 
 
 .wideForm{

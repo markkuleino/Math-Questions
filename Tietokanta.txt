@@ -103,6 +103,12 @@ CREATE TABLE questions(
    PRIMARY KEY (ID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
+ALTER TABLE questions
+  ADD COLUMN levelID SMALLINT UNSIGNED,
+  ADD FOREIGN KEY (levelID) REFERENCES levels(ID) ON DELETE CASCADE;
+
+
+
 
 CREATE TABLE questionImages(
    ID SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -202,3 +208,81 @@ questiontopics on questiontopics.topicID = topicsq.ID
 WHERE 
 questiontopics.questionID = 6
 
+
+select refs.ID, ref from questions 
+   INNER JOIN
+   refs on questions.refID = refs.ID
+   GROUP by refs.ID    
+
+
+select * from questions 
+        INNER JOIN
+        questionTopics on questions.ID = questionTopics.questionID
+        INNER JOIN
+        topicsQ on questionTopics.topicID = topicsQ.ID
+        WHERE 
+        topicsQ.topic IN ()
+
+topicsq: 93, 41
+41 => questionID = 23, 45, 57
+93 => questionID = 57
+
+select * from questions 
+        INNER JOIN
+        questionTopics on questions.ID = questionTopics.questionID
+        INNER JOIN
+        topicsQ on questionTopics.topicID = topicsQ.ID
+        WHERE 
+        topicsQ.topic IN ("nopeus", "Alkunopeus")
+ID = questionID: 57, 23, 45, 57
+
+select * from questions 
+        INNER JOIN
+        questionTopics on questions.ID = questionTopics.questionID
+        INNER JOIN
+        topicsQ on questionTopics.topicID = topicsQ.ID
+        WHERE 
+        topicsQ.topic IN ("nopeus", "Alkunopeus")
+        AND
+        refID IN (9, 1)
+
+
+ID = questionID: 57, 23, 45, 57
+
+
+
+
+select * from questions 
+        INNER JOIN
+        questionTopics on questions.ID = questionTopics.questionID
+        INNER JOIN
+        topicsQ on questionTopics.topicID = topicsQ.ID
+        group by questions.ID
+        having count(*) > 1
+
+
+ select  * from questions 
+        INNER JOIN
+        solutions on solutions.qID = questions.ID
+        INNER JOIN
+        solutionTopics on solutionTopics.solutionID = solutions.ID 
+        INNER JOIN
+        topicsA on topicsA.ID = solutionTopics.topicID
+        WHERE
+        topicsA.topic IN ("tulo", "aritmeettinen jono")
+        group by questions.ID
+        having count(*) > 1
+        
+
+
+
+ select  * from questions 
+        INNER JOIN
+        solutions on solutions.qID = questions.ID
+        INNER JOIN
+        solutionTopics on solutionTopics.solutionID = solutions.ID 
+        INNER JOIN
+        topicsA on topicsA.ID = solutionTopics.topicID
+        WHERE
+        topic in ("tulo", "aritmeettinen jono")
+-> ID: 54

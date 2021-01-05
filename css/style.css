@@ -1,13 +1,123 @@
-/* CSS files add styling rules to your content */
 
-body {
-  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
-  margin: 2em;
+	.border{
+		border-style: solid;
+		border-width: 3px;
+		border-radius: 5px;
+		margin: 10px;
+		padding: 15px;
+	}
+.mainSearch{
+	border-style: solid;
+		border-width: 3px;
+		border-radius: 5px;
+		margin: 10px;
+		padding: 15px;
+
+}
+.vihje{
+  background-color: #a6bdce;
+ 
+ }
+ .tietosuojaseloste{
+	font-size: 70%;
+ }
+.question{
+	border-style: solid;
+	border-width: 1px;
+	margin: 2px;
+	padding: 5px;
+	border-radius: 5px;
+
 }
 
-h1 {
-  font-style: italic;
-  color: #8df308;
+.solution{
+  border: 2px solid red;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 3px
+}
+.topic{
+  border: 2px solid red;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 3px;
+}
+.qtopic{
+  border: 2px solid green;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 3px;
+}
+.nonvisible{
+  display:none;
+
+}
+hr.solutions {
+  border: 1px dashed red;
+}
+
+.fstElement { font-size: 1.2em; }
+            .fstToggleBtn { min-width: 16.5em; }
+
+            .submitBtn { display: none; }
+
+            .fstMultipleMode { display: block; }
+            .fstMultipleMode .fstControls { width: 100%; }
+
+
+/* https://code-boxx.com/pure-simple-css-toggle-button/ */
+/* Hide default input */
+.toggle input {
+  display: none;
+}
+
+/* The container and background */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 90px;
+  height: 40px;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #bc2612;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+
+/* The sliding button */
+.slider:before {
+  position: absolute;
+  content: "";
+  width: 38px;
+  height: 34px;
+  left: 2px;
+  top: 2px;
+  background-color: #eee;
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+
+/* On checked */
+input:checked + .slider {
+  background-color: #8cbc13;
+}
+input:checked + .slider:before {
+  transform: translateX(47px);
 }
 
 
+/* https://stackoverflow.com/questions/3651626/jquery-if-checkbox-is-checked-toggleclass */
+.show-hide
+{
+    display:none;
+    margin: 0;
+    padding: 0;
+    clear:both;
+}
