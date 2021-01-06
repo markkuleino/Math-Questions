@@ -10,6 +10,16 @@ print_r($_POST);
 $ref = $_POST['ref'];
 $qNro = $_POST['qNro'];
 $qdate = $_POST['questiondate'];
+
+if (empty($_POST["questiondate"])){      
+   $qdate = NULL;
+ }else{
+   $qdate = strtotime($_POST["questiondate"]);
+   $qdate = date("Y-m-d", $qdate);
+ }
+
+
+
 $link = $_POST['link'];
 $question = $_POST['question'];
 $level = $_POST['level'];
@@ -45,7 +55,7 @@ foreach($topics as $topic){
 #
 # Save the question
 #
-$qID = $conn -> addQuestion( $question, $qdate, $qNro, $link, $refID );
+$qID = $conn -> addQuestion( $question, $qdate, $qNro, $link, $refID, $level );
 
 
 #

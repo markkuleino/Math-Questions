@@ -442,13 +442,13 @@ return $this -> conn_id -> lastInsertId();
 } 
 
 
-function addQuestion( $q, $qdate, $nro, $link, $refID ){
+function addQuestion( $q, $qdate, $nro, $link, $refID, $level ){
     if ( empty( $this->conn_id ) ) // Not connected
         $this->connect();
         try{
         $sql = $this->conn_id->prepare( "
-            INSERT INTO questions (question, qdate, date, questionNRO, link, refID) 
-            VALUES(:q, :qdate, NOW(), :nro, :link, :refID)
+            INSERT INTO questions (question, qdate, date, questionNRO, link, refID, levelID) 
+            VALUES(:q, :qdate, NOW(), :nro, :link, :refID, :level)
         " );//WHERE
         $sql->setFetchMode(PDO::FETCH_INTO, new koe);
         if( !$sql->execute(array(
@@ -456,7 +456,8 @@ function addQuestion( $q, $qdate, $nro, $link, $refID ){
             ":qdate" => $qdate,
             ":nro" => $nro, 
             ":link" => $link, 
-            ":refID" => $refID
+            ":refID" => $refID,
+            ":level" => $level
         )) ){
         print_r($sql->errorInfo());
         }
