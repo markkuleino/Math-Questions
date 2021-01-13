@@ -133,21 +133,7 @@ foreach ($questions as $q){
   $qText1 = preg_replace('/\(\'(.*?)\'\)/i', '', $qText );
 
   //
-  /*
-  echo ( $qText ) ;
-
-  //
   // https://stackoverflow.com/questions/11249445/php-regex-get-a-string-within-parentheses
-  echo '<p>';
-  preg_match_all('/\(\'(.*?)\'\)/i', $qText , $images);
-  print_r( $images[0] );
-  echo '</p>';
-
-  echo '<p>';
-  $qText1 = preg_replace('/\(\'(.*?)\'\)/i', '', $qText );
-  echo $qText1; 
-  echo '</p>';
-  */
 
   echo '<p>';
   $count = count($images[1]);
@@ -166,8 +152,9 @@ foreach ($questions as $q){
   echo '</p>';
 
 
-
-
+  if ( isset($_SESSION['uname'] ) ){
+    echo "<p><a href='newSolution.php?id=" . $q -> questionID . "'>Add Solution</a></p>";
+  }
 
   echo '</div>';
 }
