@@ -1336,7 +1336,7 @@ public static function interpolateQuery($query, $params) {
         public $searchSolutionOperator = "Or";
         public $searchBothOperator = "Or";
 
-        public $page = 1;
+        public $page = 0;
         public $pageStart = 1;
         public $pageEnd = 10;
 
