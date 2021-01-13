@@ -286,3 +286,13 @@ select * from questions
         WHERE
         topic in ("tulo", "aritmeettinen jono")
 -> ID: 54
+
+
+select * from questions 
+            INNER JOIN
+            questionTopics on questions.ID = questionTopics.questionID
+            INNER JOIN
+            topicsQ on questionTopics.topicID = topicsQ.ID 
+            INNER JOIN 
+            levels on levels.ID = questions.levelID
+WHERE ( level IN ("Lukio") )

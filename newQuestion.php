@@ -154,6 +154,9 @@ print '
 
 <?php
 if ( isset($_SESSION['uname'])){
+
+  echo "<p><a href='images.php'>Add Image</a></p>";
+  echo "<p><a href='newSolution.php?id=X'>Add Solution with ID</a></p>";
   include('php/newQuestionInsertQuestion.php');
 }
 ?>

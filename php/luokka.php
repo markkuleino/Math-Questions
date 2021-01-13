@@ -82,18 +82,17 @@
 
 
 
-    function   LisaaKuva($nimirnd, $hakemisto ){
+    function   addImage($namernd ){
             if ( empty( $this->conn_id ) ) // Not connected
                 $this->connect();
             try{
-                $sql = $this->conn_id->prepare( "INSERT INTO kuvat 
-                    (nimirnd, hakemisto, lisayspvm)
+                $sql = $this->conn_id->prepare( "INSERT INTO images 
+                    (namernd,  date)
                     VALUES 
-                    (:nimirnd, :hakemisto, NOW()) 
+                    (:namernd, NOW()) 
                 " );
                 $sql->execute(array(
-                    ':nimirnd' => $nimirnd,
-                    ':hakemisto' => $hakemisto
+                    ':namernd' => $namernd
                 ));
 
                 if ( $sql -> errorCode() > 0 ){
@@ -128,7 +127,31 @@
     }
 
 
-
+    function   getImages( ){
+        if ( empty( $this->conn_id ) ) // Not connected
+            $this->connect();
+        try{
+            $sql = $this->conn_id->prepare( "
+                SELECT * FROM images
+                 ORDER BY date DESC 
+            " );//WHERE
+            $sql->setFetchMode(PDO::FETCH_INTO, new images);
+            if( !$sql->execute(array(
+            )) ){
+            print_r($sql->errorInfo());
+    }
+    if ($sql -> rowCount() < 2){
+                    $result = $sql -> fetchAll();
+            } else{
+                while ($object = $sql->fetch()) {
+                    $result[] = clone $object;
+               }  
+            }
+        } catch (PDOException $e) {
+            $this->error($e->getMessage());
+        }
+    return $result;
+}
 
 	
    function   getLevels( ){
@@ -990,6 +1013,19 @@ public static function interpolateQuery($query, $params) {
         // Printing functions
         //
 
+
+        function imageString( $a ){
+            $str = '';
+            $str .= '<div class="row"><div class="three columns">';
+            $str .= '<a href="' . $a . '">';
+            $str .= '<img class="u-full-width" src="' . $a . '">';
+            $str .= '</a>';
+            $str .= '</div></div>';
+            return $str;
+
+        } 
+
+
         function printQuestion( $id ){
             $q = $this->conn -> getQuestion( $id );
 
@@ -1005,7 +1041,11 @@ public static function interpolateQuery($query, $params) {
             $str .= '<div class="question">';
             $str .= '<b>' . $q[0] -> questionNRO . " ";
             $str .= $r[0] -> ref . '</b>';
+
+            //strtr ($str, array ('a' => '<replacement>'));
             $str .= $q[0] -> question;
+
+            //$str .= strtr( $q[0] -> question, array('htmlimage' => '$this->HHhtmlImage') );
 
             // Tips
             $qTopics = $this->conn -> getQuestionTopicsOne( $id );
@@ -1437,7 +1477,8 @@ public static function interpolateQuery($query, $params) {
     }
 	class elio{}
 	class koe{}
-	class vastaaja{}
+    class vastaaja{}
+    class images{}
 	
 	
     class materiaalit{}

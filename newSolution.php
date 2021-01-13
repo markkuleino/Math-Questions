@@ -164,6 +164,9 @@ print '
 
 <?php
 
+echo "<p><a href='images.php'>Add Image</a></p>";
+echo "<p><a href='newQuestion.php'>Add Question</a></p>";
+
 echo '<div>';
 echo '<div class="row"><div class="six columns">';
 echo '<h2>Kysymys</h2>';

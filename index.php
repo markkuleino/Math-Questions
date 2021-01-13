@@ -128,8 +128,45 @@ foreach ($questions as $q){
 
   //
   // The question
+  $qText = $kys -> printQuestion( $q -> questionID );
+  preg_match_all('/\(\'(.*?)\'\)/i', $qText , $images);
+  $qText1 = preg_replace('/\(\'(.*?)\'\)/i', '', $qText );
 
-  echo ($kys -> printQuestion( $q -> questionID )) ;
+  //
+  /*
+  echo ( $qText ) ;
+
+  //
+  // https://stackoverflow.com/questions/11249445/php-regex-get-a-string-within-parentheses
+  echo '<p>';
+  preg_match_all('/\(\'(.*?)\'\)/i', $qText , $images);
+  print_r( $images[0] );
+  echo '</p>';
+
+  echo '<p>';
+  $qText1 = preg_replace('/\(\'(.*?)\'\)/i', '', $qText );
+  echo $qText1; 
+  echo '</p>';
+  */
+
+  echo '<p>';
+  $count = count($images[1]);
+  $search = 'htmlimage';
+  $searchlen = strlen($search);
+  $qText2 = '';
+  $offset = 0;
+  for($i = 0; $i < $count; $i++) {
+      if (($pos = strpos($qText1, $search, $offset)) !== false){
+          $qText2 .= substr($qText1, $offset, $pos-$offset) . $kys->imageString( $images[1][$i] );
+          $offset = $pos + $searchlen;
+      }
+  }
+  $qText2 .= substr($qText1, $offset);
+  echo $qText2;
+  echo '</p>';
+
+
+
 
 
   echo '</div>';
