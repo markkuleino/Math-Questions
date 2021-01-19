@@ -1029,6 +1029,11 @@ public static function interpolateQuery($query, $params) {
         function printQuestion( $id ){
             $q = $this->conn -> getQuestion( $id );
 
+            if ( count($q) == 0 ){
+                $str =  "Not a valid ID";
+                return $str;
+            }
+
             $str = "";
             // Ref
             $r = $this->conn-> getRefID( $q[0]->refID );
